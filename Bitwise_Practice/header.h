@@ -5,4 +5,6 @@
 
 unsigned int consecutive_ones(unsigned int n);
 
+void subnet_mask_check(char ip1[], char ip2[], int mask);
+
 #endif

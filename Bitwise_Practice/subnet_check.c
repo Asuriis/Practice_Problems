@@ -4,53 +4,60 @@ E.g., if addr1=10.11.12.13, addr2=10.11.11.255, n=21, the answer is “yes”; for t
 You need to manipulate dotted decimal string to 32-bit int also in this question. Please use bitwise AND to solve the problem.
 */
 
-#include <math.h>
+#include "header.h"
 #include <string.h>
+#include <stdio.h>
+#include <stdint.h> //purely for uint32_t to enforce 32 bit binary
 
-int subnet_mask_check(char ip1[], char ip2[], int mask) {
-	int A[] = char_to_int(ip1);
-	int B[] = char_to_int(ip2);
+typedef struct {
+	unsigned int octet[4]; //stores each octet value in the ip address, e.g. [255,255,10,0]
+} ipv4;
 
-	for (int i = 0; i < 3; i++) {
+ipv4 char_to_ipv4(const char* ip);
 
+void subnet_mask_check(const char *ip1, const char *ip2, unsigned int mask) {
+	ipv4 A = char_to_ipv4(ip1);
+	ipv4 B = char_to_ipv4(ip2);
+	
+	uint32_t ip1_bin = ipv4_to_bin(A);
+	uint32_t ip2_bin = ipv4_to_bin(B);
+	uint32_t subnet_mask = mask_to_bin(mask);
+
+	if ((ip1_bin & subnet_mask) != (ip2_bin & subnet_mask)) {
+		printf("No, the two IP's %s and %s are not under the same subnet.\n", ip1, ip2);
+		return;
 	}
+	printf("Yes, the two IP's %s and %s are under the same subnet.\n", ip1, ip2);
 }
 
-/*
-1.how to make int in arr to bin
-2.and bin with n ... if(A & n == B & n) ret yes else ret no
-*/
-
-int char_to_int(char ip[]) {
+//converts char values in the array to int values which are then stored in a struct array so they can be accessed later
+ipv4 char_to_ipv4(const char *ip) { 
 	
-	int arr_length = strlen(ip);
-
+	ipv4 addr = {0}; //zeros all values in the struct before use
 	int arr_pos = 0;
-	int ip_int[4]; //ip value from char -> int
-
-	int val = 0;
-	unsigned int ip_in_bi = 0;
+	int arr_length = strlen(ip);
+	unsigned int val = 0;
+	
 	for (int i = 0; i < arr_length; i++) {
-		if (ip[i] != ".") {
-			if (val != 0) {
-				val *= 10;
-			}
-			val += ip[i];
-		}
-		else { //records how big the value is before the "." marker
-			ip_int[arr_pos] = val;
+		if (ip[i] == '.') {
+			addr.octet[arr_pos] = val;
 			arr_pos++;
 			val = 0;
 		}
+		else {
+			int char_now_int = ip[i] - '0'; //char to int
+			val = val * 10 + char_now_int; //prev int shifted and current int added, e.g. ["255"]2 -> 20+5 = 25 -> 250 +5 = 255
+		}
 	}
-	return ip_int;
+	addr.octet[arr_pos] = val;
+	return addr;
 }
-//ip_in_bi += ip[i] * exp2(32 - i); // ldexp(ip[i], i)) will do the same but shorter
 
 
-/*
-Write a C function which takes two 32-bit unsigned int (a, b), the function returns how many positions they both have binary 1. E.g., if a=123, b=74, the answer is 3.
-Write a C function which takes two 32-bit unsigned int (a, b), the function returns how many positions they both have binary 0. E.g., if a=123, b=74, the answer is 26.
-Write a C function which separates a 32-bit unsigned int into 4 bytes (unsigned char) in Big Endian order. 
-The function should look like “void uint2bigEndian(unsigned int a, unsigned char *result)”.
-*/
+uint32_t ipv4_to_bin(ipv4 ip) { //takes values from ipv4 array and combines into one binary string
+	return (ip.octet[0] << 24 | ip.octet[1] << 16 | ip.octet[2] << 8 | ip.octet[3]);
+}
+
+uint32_t mask_to_bin(int mask) {
+	return (~0U) << (32 - mask); //bitwise NOT function on 0's, U signals unsigned int
+}
