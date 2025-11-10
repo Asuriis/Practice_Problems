@@ -24,6 +24,12 @@
     <ClCompile Include="subnet_check.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="binary_positions.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="big_endian.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="header.h">

@@ -127,6 +127,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="big_endian.c" />
+    <ClCompile Include="binary_positions.c" />
     <ClCompile Include="consec_ones.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="subnet_check.c" />
