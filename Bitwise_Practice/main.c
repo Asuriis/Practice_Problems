@@ -14,4 +14,8 @@ int main(void) {
 	printf("There are %u matching 1's.\n", ret);
 	ret = nmb_binary_zeros(123, 74);
 	printf("There are %u matching 0's.\n", ret);
+
+	unsigned char* result = uint2bigEndian(337);
+	printf("%s\n", result);
+	
 }

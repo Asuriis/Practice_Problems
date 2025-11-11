@@ -10,4 +10,6 @@ void subnet_mask_check(char ip1[], char ip2[], int mask);
 int nmb_binary_ones(unsigned int a, unsigned int b);
 int nmb_binary_zeros(unsigned int a, unsigned int b);
 
+unsigned char* uint2bigEndian(unsigned int a);
+
 #endif
